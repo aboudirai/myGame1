@@ -8,30 +8,31 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-public class Game extends Canvas implements Runnable{
-	
-	//8:42:31 LEFT OFF
-	
+public class Game extends Canvas implements Runnable {
+
+	// 8:42:31 LEFT OFF
+
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String NAME = "Untitled Game";
-	public static final int HEIGHT = 240;
-	public static final int WIDTH = HEIGHT * 16/9;
-	
+	public static final int HEIGHT = 120;
+	public static final int WIDTH = 160;
+	public static final int SCALE = 3;
+
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-	private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 	private boolean running = false;
 	private int tickCount;
-	
+
 	public void start() {
 		running = true;
 		new Thread(this).start();
 	}
-	
+
 	public void stop() {
 		running = false;
 	}
-	
+
 	public void run() {
 		long lastTime = System.nanoTime();
 		double unprocessed = 0;
@@ -39,30 +40,30 @@ public class Game extends Canvas implements Runnable{
 		int frames = 0;
 		int ticks = 0;
 		long lastTimer1 = System.currentTimeMillis();
-		
+
 		while (running) {
 			long now = System.nanoTime();
 			unprocessed += (now - lastTime) / nsPerTick;
 			lastTime = now;
 			boolean shouldRender = true;
-			while(unprocessed >= 1) {
+			while (unprocessed >= 1) {
 				ticks++;
 				tick();
 				unprocessed -= 1;
 				shouldRender = true;
 			}
-			
+
 			try {
 				Thread.sleep(2);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			if(shouldRender) {
+			if (shouldRender) {
 				frames++;
 				render();
 			}
-			
-			 if(System.currentTimeMillis() - lastTimer1 > 1000) {
+
+			if (System.currentTimeMillis() - lastTimer1 > 1000) {
 				lastTimer1 += 1000;
 				System.out.println(frames + "fps");
 				frames = 0;
@@ -70,7 +71,7 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 	}
-	
+
 	public void tick() {
 		tickCount++;
 	}
@@ -81,24 +82,23 @@ public class Game extends Canvas implements Runnable{
 			createBufferStrategy(3);
 			return;
 		}
-		
-		for(int i = 0; i < pixels.length; i++) {
-			pixels[i] = i + tickCount; 
+
+		for (int i = 0; i < pixels.length; i++) {
+			pixels[i] = i + tickCount;
 		}
-		
+
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		g.dispose();
 		bs.show();
 	}
-	
+
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.setPreferredSize(new Dimension(WIDTH*2, HEIGHT*2));
-		game.setMaximumSize(new Dimension(WIDTH*2, HEIGHT*2));
-		game.setMinimumSize(new Dimension(WIDTH*2, HEIGHT*2));
-		
-		
+		game.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		game.setMaximumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		game.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+
 		JFrame frame = new JFrame(NAME);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
@@ -107,11 +107,9 @@ public class Game extends Canvas implements Runnable{
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
+
 		game.start();
-		
+
 	}
-	
-	
-	
+
 }
