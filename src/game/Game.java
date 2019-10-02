@@ -2,6 +2,7 @@ package game;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -12,6 +13,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import game.graphics.Screen;
 import game.graphics.SpriteSheet;
@@ -122,6 +124,7 @@ public class Game extends Canvas implements Runnable {
 		}
 
 		screen.render();
+		
 		for(int y = 0; y < screen.h; y++) {
 			for(int x = 0; x < screen.w; x++) {
 				pixels[x + y * WIDTH] = colors[screen.pixels[x + y * screen.w]];
@@ -129,12 +132,13 @@ public class Game extends Canvas implements Runnable {
 		}
 
 		Graphics g = bs.getDrawGraphics();
-
-		int ww = WIDTH * 3;
-		int hh = HEIGHT * 3;
+		g.setColor(Color.GRAY );
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		int ww = WIDTH * 3 - 10;
+		int hh = HEIGHT * 3 - 10;
 		int xo = (getWidth() - ww) / 2;
 		int yo = (getHeight() - hh) / 2;
-
 		g.drawImage(image, xo, yo, ww, hh, null);
 		g.dispose();
 		bs.show();
@@ -142,10 +146,10 @@ public class Game extends Canvas implements Runnable {
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		game.setMaximumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		game.setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-
+		game.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		
 		JFrame frame = new JFrame(NAME);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
@@ -154,7 +158,7 @@ public class Game extends Canvas implements Runnable {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-
+		System.out.println("in here");
 		game.start();
 
 	}
