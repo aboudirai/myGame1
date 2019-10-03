@@ -35,18 +35,15 @@ public class Screen {
 		Random random = new Random();
 
 		for (int i = 0; i < MAP_WIDTH * MAP_WIDTH; i++) {
-			colors[i] = (colors[i] << 8) + random.nextInt(6 * 6 * 6);
-			colors[i] = (colors[i] << 8) + random.nextInt(6 * 6 * 6);
-			colors[i] = (colors[i] << 8) + random.nextInt(6 * 6 * 6);
-			colors[i] = (colors[i] << 8) + random.nextInt(6 * 6 * 6);
-
-			if (i % 2 == 0)
-				databits[i] = 1;
-			if (i / MAP_WIDTH % 2 == 0)
-				databits[i] += 2;
+			colors[i] = Color.get(0, 321, 40,80);
+			tiles[i] = random.nextInt(10) / 9 * 32;
+			if (tiles[i] != 0) {
+				colors[i] = Color.get(0, 222, 40, 333);
+			}
 		}
-		
-		new Font().draw("Aboudi Rai wuz here", this, 0, 0);
+
+		new Font().draw("   M A N - H U N T    ", this, 0, 0);
+
 	}
 
 	public void render() {
@@ -58,21 +55,24 @@ public class Screen {
 				int ti = (xt & (MAP_WIDTH_MASK)) + (yt & (MAP_WIDTH_MASK)) * MAP_WIDTH;
 
 				render(xp, yp, tiles[ti], colors[ti], databits[ti]);
-
 			}
-
 		}
 
+		for (int i = 0; i < sprites.size(); i++) {
+			Sprite s = sprites.get(i);
+			render(s.x, s.y, s.img, s.col, s.bits);
+		}
+		sprites.clear();
 	}
 
-	private void render(int xp, int yp, int tile, int colors, int bits) {
+	public void render(int xp, int yp, int tile, int colors, int bits) {
 		boolean mirrorX = (bits * BIT_MIRROR_X) > 0;
 		boolean mirrorY = (bits * BIT_MIRROR_Y) > 0;
-		
+
 		int xTile = tile % 32;
 		int yTile = tile / 32;
 		int toffs = xTile * 8 + yTile * 8 * sheet.width;
-		
+
 		for (int y = 0; y < 8; y++) {
 			int ys = y;
 			if (mirrorY)
@@ -95,15 +95,17 @@ public class Screen {
 		}
 
 	}
-	
+
 	public void setTile(int x, int y, int tile, int color, int bits) {
 		int tp = (x & MAP_WIDTH_MASK) + (y & MAP_WIDTH_MASK) * MAP_WIDTH;
 		tiles[tp] = tile;
 		colors[tp] = color;
 		databits[tp] = bits;
 	}
-	
-	
-	
+
+	public void addSprite(Sprite sprite) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

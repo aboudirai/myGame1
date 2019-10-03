@@ -2,7 +2,6 @@ package game;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -13,10 +12,11 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
+import game.graphics.Color;
 import game.graphics.Screen;
 import game.graphics.SpriteSheet;
+
 
 public class Game extends Canvas implements Runnable {
 
@@ -34,6 +34,7 @@ public class Game extends Canvas implements Runnable {
 	private boolean running = false;
 	private int tickCount;
 	private Screen screen;
+	private InputHandler input = new InputHandler(this);
 
 	private int[] colors = new int[256];
 	
@@ -52,7 +53,16 @@ public class Game extends Canvas implements Runnable {
 		for(int r = 0; r < 6; r++) {
 			for(int g = 0; g < 6; g++) {
 				for(int b = 0; b < 6; b++) {
-					colors[pp++] = (r * 255/5)  << 16 | (g * 255/5) << 8 | (b * 255/5);
+					int rr = (r * 255 / 5);
+					int gg = (g * 255 / 5);
+					int bb = (b * 255 / 5);
+					int mid = (rr*30 + gg * 59 + bb * 11) / 100;
+					rr = (rr + mid) / 2;
+					gg = (gg + mid) / 2;
+					bb = (bb + mid) / 2;
+					
+					
+					colors[pp++] = rr << 16 | gg << 8 | bb;
 					//colors[pp++] = random.nextInt(0x1000000);
 				}
 			}
@@ -110,6 +120,10 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public void tick() {
+		if (input.up) screen.yScroll--;
+		if (input.down) screen.yScroll++;
+		if (input.left) screen.xScroll--;
+		if (input.right) screen.xScroll++;
 		tickCount++;
 		// screen.xScroll++;
 	}
@@ -120,11 +134,19 @@ public class Game extends Canvas implements Runnable {
 
 		if (bs == null) {
 			createBufferStrategy(3);
+			requestFocus();
 			return;
 		}
-
-		screen.render();
 		
+		
+		screen.render();
+		int x0 = WIDTH / 2 - 8;
+		int y0 = HEIGHT / 2 - 8;
+		screen.render(x0 + 0, y0 + 0, 0 + 5 * 32, Color.get(-1, 555, 555, 555), 0);
+		screen.render(x0 + 8, y0 + 0, 1 + 5 * 32, Color.get(-1, 555, 555, 555), 0);
+		screen.render(x0 + 0, y0 + 8, 0 + 6 * 32, Color.get(-1, 555, 555, 555), 0);
+		screen.render(x0 + 8, y0 + 8, 1 + 6 * 32, Color.get(-1, 555, 555, 555), 0);
+
 		for(int y = 0; y < screen.h; y++) {
 			for(int x = 0; x < screen.w; x++) {
 				pixels[x + y * WIDTH] = colors[screen.pixels[x + y * screen.w]];
@@ -132,7 +154,7 @@ public class Game extends Canvas implements Runnable {
 		}
 
 		Graphics g = bs.getDrawGraphics();
-		g.setColor(Color.GRAY );
+		//g.setColor(Color.GRAY );
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
 		int ww = WIDTH * 3 - 10;
