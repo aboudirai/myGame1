@@ -35,10 +35,22 @@ public class Screen {
 		Random random = new Random();
 
 		for (int i = 0; i < MAP_WIDTH * MAP_WIDTH; i++) {
-			colors[i] = Color.get(0, 321, 40,80);
-			tiles[i] = random.nextInt(10) / 9 * 32;
-			if (tiles[i] != 0) {
-				colors[i] = Color.get(0, 222, 40, 333);
+			//colors[i] = Color.get(0, 0, 40, 30);
+			
+			if (random.nextInt(40) == 0) {
+				tiles[i] = 32;
+				colors[i] = Color.get(111, 333, 40, 2221);
+				databits[i] = random.nextInt(2);
+			}
+			else if (random.nextInt(40) == 0) {
+				tiles[i] = 33;
+				colors[i] = Color.get(20, 30, 40, 550);
+			}
+			else {
+				tiles[i] = random.nextInt(4);
+				colors[i] = Color.get(0, 0, 40, 30);
+				databits[i] = random.nextInt(4);
+				
 			}
 		}
 
@@ -66,9 +78,9 @@ public class Screen {
 	}
 
 	public void render(int xp, int yp, int tile, int colors, int bits) {
-		boolean mirrorX = (bits * BIT_MIRROR_X) > 0;
-		boolean mirrorY = (bits * BIT_MIRROR_Y) > 0;
-
+		boolean mirrorX = (bits == 1);
+		boolean mirrorY = (bits == 2);
+		
 		int xTile = tile % 32;
 		int yTile = tile / 32;
 		int toffs = xTile * 8 + yTile * 8 * sheet.width;

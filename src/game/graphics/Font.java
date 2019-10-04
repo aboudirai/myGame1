@@ -10,7 +10,6 @@ public class Font {
 		msg = msg.toUpperCase();
 		for (int i = 0; i < msg.length(); i++) {
 			int ix = chars.indexOf(msg.charAt(i));
-			System.out.println(msg.charAt(i) + ": " + ix);
 			if (ix >= 0) {
 				screen.setTile(x + i, y, ix + 32 * 30, (5 + 5 * 6 + 5 * 36) * 256 * 256 * 256, 0);
 			}
